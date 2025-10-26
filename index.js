@@ -6,11 +6,11 @@ async function main() {
 
   // Show help if --help flag is provided
   if (process.argv.includes('--help') || process.argv.includes('-h')) {
-    console.log('Usage: create-bas-app <project-name>');
+    console.log('Usage: create-geo-app <project-name>');
     console.log('\nDescription:');
     console.log('  Creates a Next.js 16 app with shadcn/ui pre-configured');
     console.log('\nExample:');
-    console.log('  create-bas-app my-app');
+    console.log('  create-geo-app my-app');
     console.log('\nFeatures:');
     console.log('  - Next.js 16 with TypeScript');
     console.log('  - Turbopack for faster development');
@@ -22,7 +22,7 @@ async function main() {
 
   if (!projectName) {
     console.error('Please provide a project name:');
-    console.error('create-bas-app <project-name>');
+    console.error('create-geo-app <project-name>');
     console.error('\nUse --help for more information');
     process.exit(1);
   }

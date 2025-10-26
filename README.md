@@ -1,4 +1,4 @@
-# Create Bas App
+# Create Geo App
 
 A CLI tool to create Next.js 16 apps with shadcn/ui pre-configured using the latest best practices.
 

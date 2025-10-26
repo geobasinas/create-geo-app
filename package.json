@@ -11,7 +11,7 @@
     "test": "node index.js --help || exit 0"
   },
   "keywords": [
-    "create-bas-app",
+    "create-geo-app",
     "nextjs",
     "nextjs-16",
     "shadcn-ui",
