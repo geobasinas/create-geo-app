@@ -124,6 +124,7 @@ async function main() {
     await createPrivacyPage();
     await createTermsPage();
     await createGetStartedPage();
+    await createDocsPage();
 
     // Create essential Next.js pages
     console.log('\n📄 Creating essential Next.js pages...');
@@ -312,6 +313,12 @@ export function MobileMenu() {
               Home
             </Link>
             <Link
+              href="/docs"
+              onClick={() => setOpen(false)}
+            >
+              Docs
+            </Link>
+            <Link
               href="/about"
               onClick={() => setOpen(false)}
             >
@@ -372,6 +379,11 @@ export function Header() {
           <HoverPrefetchLink href="/">
             <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors">
               Home
+            </span>
+          </HoverPrefetchLink>
+          <HoverPrefetchLink href="/docs">
+            <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors">
+              Docs
             </span>
           </HoverPrefetchLink>
           <HoverPrefetchLink href="/about">
@@ -854,6 +866,666 @@ export default function GetStarted() {
   const pagesDir = 'app/get-started';
   await mkdir(pagesDir, { recursive: true });
   await writeFile(join(pagesDir, 'page.tsx'), getStartedContent);
+}
+
+async function createDocsPage() {
+  const docsContent = `"use client"
+
+import * as React from "react"
+import Link from "next/link"
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { Badge } from "@/components/ui/badge"
+import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
+import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion"
+import { Separator } from "@/components/ui/separator"
+import { 
+  BookOpen, 
+  Code2, 
+  Palette, 
+  Zap, 
+  Package, 
+  Settings, 
+  FileCode, 
+  Layers,
+  Terminal,
+  CheckCircle2,
+  Info
+} from "lucide-react"
+
+export default function Docs() {
+  return (
+    <div className="container mx-auto px-4 py-16 max-w-6xl">
+      {/* Hero Section */}
+      <div className="text-center mb-12">
+        <Badge className="mb-4" variant="outline">
+          <BookOpen className="h-3 w-3 mr-1" />
+          Documentation
+        </Badge>
+        <h1 className="text-5xl font-bold mb-4 text-black dark:text-white">
+          Create Geo App Documentation
+        </h1>
+        <p className="text-xl text-neutral-600 dark:text-neutral-400 max-w-2xl mx-auto">
+          Complete guide to using create-geo-app CLI tool for building Next.js 16 applications with shadcn/ui
+        </p>
+      </div>
+
+      {/* Quick Start Alert */}
+      <Alert className="mb-8">
+        <Terminal className="h-4 w-4" />
+        <AlertTitle>Quick Start</AlertTitle>
+        <AlertDescription>
+          Run <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-sm">npx @geobasinas/create-geo-app my-app</code> to create a new project
+        </AlertDescription>
+      </Alert>
+
+      {/* Main Tabs */}
+      <Tabs defaultValue="overview" className="mb-12">
+        <TabsList className="grid w-full grid-cols-2 lg:grid-cols-5">
+          <TabsTrigger value="overview">Overview</TabsTrigger>
+          <TabsTrigger value="cli">CLI Usage</TabsTrigger>
+          <TabsTrigger value="features">Features</TabsTrigger>
+          <TabsTrigger value="components">Components</TabsTrigger>
+          <TabsTrigger value="api">API Reference</TabsTrigger>
+        </TabsList>
+
+        {/* Overview Tab */}
+        <TabsContent value="overview" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Info className="h-5 w-5" />
+                What is Create Geo App?
+              </CardTitle>
+              <CardDescription>
+                A modern CLI tool for scaffolding Next.js 16 applications
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <p className="text-neutral-700 dark:text-neutral-300">
+                Create Geo App is a command-line interface (CLI) tool that helps you quickly bootstrap
+                production-ready Next.js 16 applications with all the modern tooling and best practices
+                pre-configured.
+              </p>
+              <p className="text-neutral-700 dark:text-neutral-300">
+                Built on top of <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded">create-next-app</code>,
+                it extends the base setup with shadcn/ui components, dark mode support, optimized configuration,
+                and a complete set of essential pages and components.
+              </p>
+            </CardContent>
+          </Card>
+
+          <div className="grid md:grid-cols-3 gap-6">
+            <Card>
+              <CardHeader>
+                <Zap className="h-8 w-8 mb-2 text-yellow-500" />
+                <CardTitle>Fast Setup</CardTitle>
+                <CardDescription>
+                  Get started in minutes with zero configuration
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Automated project scaffolding with sensible defaults and best practices built-in.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Palette className="h-8 w-8 mb-2 text-purple-500" />
+                <CardTitle>Pre-styled</CardTitle>
+                <CardDescription>
+                  shadcn/ui components ready to use
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  All shadcn/ui components pre-installed with dark mode support using next-themes.
+                </p>
+              </CardContent>
+            </Card>
+
+            <Card>
+              <CardHeader>
+                <Package className="h-8 w-8 mb-2 text-blue-500" />
+                <CardTitle>Complete</CardTitle>
+                <CardDescription>
+                  Essential pages and components included
+                </CardDescription>
+              </CardHeader>
+              <CardContent>
+                <p className="text-sm text-neutral-600 dark:text-neutral-400">
+                  Header, footer, error pages, loading states, and more - all production-ready.
+                </p>
+              </CardContent>
+            </Card>
+          </div>
+        </TabsContent>
+
+        {/* CLI Usage Tab */}
+        <TabsContent value="cli" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Terminal className="h-5 w-5" />
+                Command Line Interface
+              </CardTitle>
+              <CardDescription>
+                How to use the create-geo-app CLI tool
+              </CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-6">
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-black dark:text-white">Basic Usage</h3>
+                <div className="bg-neutral-900 text-neutral-100 p-4 rounded-lg font-mono text-sm">
+                  <div className="mb-2">$ npx @geobasinas/create-geo-app &lt;project-name&gt;</div>
+                  <div className="text-neutral-500"># Example:</div>
+                  <div>$ npx @geobasinas/create-geo-app my-awesome-app</div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-black dark:text-white">Get Help</h3>
+                <div className="bg-neutral-900 text-neutral-100 p-4 rounded-lg font-mono text-sm">
+                  <div>$ npx @geobasinas/create-geo-app --help</div>
+                  <div>$ npx @geobasinas/create-geo-app -h</div>
+                </div>
+              </div>
+
+              <Separator />
+
+              <div>
+                <h3 className="text-lg font-semibold mb-3 text-black dark:text-white">Project Name Requirements</h3>
+                <ul className="list-disc list-inside space-y-2 text-neutral-700 dark:text-neutral-300">
+                  <li>Must contain only lowercase letters, numbers, and hyphens</li>
+                  <li>Cannot contain spaces or special characters</li>
+                  <li>Should be a valid npm package name</li>
+                </ul>
+              </div>
+
+              <Alert>
+                <CheckCircle2 className="h-4 w-4" />
+                <AlertTitle>Valid Examples</AlertTitle>
+                <AlertDescription>
+                  <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-sm mr-2">my-app</code>
+                  <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-sm mr-2">awesome-project-2024</code>
+                  <code className="bg-neutral-100 dark:bg-neutral-800 px-2 py-1 rounded text-sm">geo-webapp</code>
+                </AlertDescription>
+              </Alert>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Features Tab */}
+        <TabsContent value="features" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Layers className="h-5 w-5" />
+                What&apos;s Included
+              </CardTitle>
+              <CardDescription>
+                Everything you need to build production-ready apps
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Accordion type="single" collapsible className="w-full">
+                <AccordionItem value="nextjs">
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                      <Badge>Core</Badge>
+                      <span>Next.js 16 Configuration</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    <ul className="list-disc list-inside space-y-1 text-neutral-700 dark:text-neutral-300 ml-4">
+                      <li><strong>TypeScript</strong> - Type-safe development</li>
+                      <li><strong>Tailwind CSS</strong> - Utility-first styling</li>
+                      <li><strong>App Router</strong> - Modern routing with layouts</li>
+                      <li><strong>Turbopack</strong> - Fast development builds</li>
+                      <li><strong>Biome</strong> - Unified linting and formatting</li>
+                      <li><strong>Import Alias</strong> - Clean imports with @/* pattern</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="ui">
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                      <Badge>UI</Badge>
+                      <span>shadcn/ui Components</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    <p className="text-neutral-700 dark:text-neutral-300">
+                      All shadcn/ui components pre-installed and configured:
+                    </p>
+                    <ul className="list-disc list-inside space-y-1 text-neutral-700 dark:text-neutral-300 ml-4">
+                      <li>Accordion, Alert, Badge, Button, Card</li>
+                      <li>Dialog, Dropdown, Input, Label, Skeleton</li>
+                      <li>Tabs, Textarea, Toast, Tooltip</li>
+                      <li>And many more - ready to use out of the box</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="theme">
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                      <Badge>Theme</Badge>
+                      <span>Dark Mode Support</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    <ul className="list-disc list-inside space-y-1 text-neutral-700 dark:text-neutral-300 ml-4">
+                      <li><strong>next-themes</strong> - Seamless theme switching</li>
+                      <li><strong>System preference</strong> - Respects OS settings</li>
+                      <li><strong>Theme toggle</strong> - Pre-built component</li>
+                      <li><strong>CSS variables</strong> - Easy customization</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="pages">
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                      <Badge>Pages</Badge>
+                      <span>Essential Pages</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    <p className="text-neutral-700 dark:text-neutral-300 mb-2">
+                      Pre-built pages ready for customization:
+                    </p>
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="text-sm">
+                        <span className="font-semibold">Content Pages:</span>
+                        <ul className="list-disc list-inside ml-4 text-neutral-600 dark:text-neutral-400">
+                          <li>Home</li>
+                          <li>About</li>
+                          <li>Contact (with form)</li>
+                          <li>Get Started</li>
+                          <li>Docs</li>
+                        </ul>
+                      </div>
+                      <div className="text-sm">
+                        <span className="font-semibold">Legal Pages:</span>
+                        <ul className="list-disc list-inside ml-4 text-neutral-600 dark:text-neutral-400">
+                          <li>Privacy Policy</li>
+                          <li>Terms of Service</li>
+                        </ul>
+                        <span className="font-semibold mt-2 block">Special Pages:</span>
+                        <ul className="list-disc list-inside ml-4 text-neutral-600 dark:text-neutral-400">
+                          <li>404 Not Found</li>
+                          <li>Error Boundary</li>
+                          <li>Loading States</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="performance">
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                      <Badge>Performance</Badge>
+                      <span>Optimizations</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    <ul className="list-disc list-inside space-y-1 text-neutral-700 dark:text-neutral-300 ml-4">
+                      <li><strong>Image Optimization</strong> - AVIF and WebP formats</li>
+                      <li><strong>Package Optimization</strong> - Tree-shaking for icons and UI</li>
+                      <li><strong>Font Optimization</strong> - Preloaded Inter font</li>
+                      <li><strong>Suspense Boundaries</strong> - Smooth loading states</li>
+                      <li><strong>Performance Monitoring</strong> - Navigation timing</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+
+                <AccordionItem value="seo">
+                  <AccordionTrigger>
+                    <div className="flex items-center gap-2">
+                      <Badge>SEO</Badge>
+                      <span>SEO & Metadata</span>
+                    </div>
+                  </AccordionTrigger>
+                  <AccordionContent className="space-y-2">
+                    <ul className="list-disc list-inside space-y-1 text-neutral-700 dark:text-neutral-300 ml-4">
+                      <li><strong>Sitemap</strong> - Auto-generated XML sitemap</li>
+                      <li><strong>Robots.txt</strong> - Search engine configuration</li>
+                      <li><strong>Environment Variables</strong> - App metadata setup</li>
+                    </ul>
+                  </AccordionContent>
+                </AccordionItem>
+              </Accordion>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* Components Tab */}
+        <TabsContent value="components" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <FileCode className="h-5 w-5" />
+                Pre-built Components
+              </CardTitle>
+              <CardDescription>
+                Reusable components included in your project
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-black dark:text-white">Layout Components</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Header</CardTitle>
+                        <CardDescription>components/header.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        <ul className="list-disc list-inside space-y-1">
+                          <li>Desktop & mobile navigation</li>
+                          <li>Theme toggle integration</li>
+                          <li>Responsive design</li>
+                          <li>Hover prefetch for performance</li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Footer</CardTitle>
+                        <CardDescription>components/footer.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        <ul className="list-disc list-inside space-y-1">
+                          <li>Company information</li>
+                          <li>Quick links</li>
+                          <li>Copyright notice</li>
+                          <li>Responsive layout</li>
+                        </ul>
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h3 className="text-lg font-semibold mb-3 text-black dark:text-white">Utility Components</h3>
+                  <div className="grid md:grid-cols-2 gap-4">
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Theme Provider</CardTitle>
+                        <CardDescription>components/theme-provider.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        Wraps your app to enable dark mode functionality using next-themes.
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Mode Toggle</CardTitle>
+                        <CardDescription>components/mode-toggle.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        Dropdown menu for switching between light, dark, and system themes.
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Mobile Menu</CardTitle>
+                        <CardDescription>components/mobile-menu.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        Responsive mobile navigation with slide-out menu and overlay.
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Hover Prefetch Link</CardTitle>
+                        <CardDescription>components/hover-prefetch-link.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        Performance-optimized link component that prefetches on hover.
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Suspense Wrapper</CardTitle>
+                        <CardDescription>components/suspense-wrapper.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        Provides loading states with skeleton components for async content.
+                      </CardContent>
+                    </Card>
+
+                    <Card>
+                      <CardHeader>
+                        <CardTitle className="text-base">Streaming Layout</CardTitle>
+                        <CardDescription>components/streaming-layout.tsx</CardDescription>
+                      </CardHeader>
+                      <CardContent className="text-sm text-neutral-600 dark:text-neutral-400">
+                        Server component for progressive rendering of slow data fetches.
+                      </CardContent>
+                    </Card>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+
+        {/* API Reference Tab */}
+        <TabsContent value="api" className="space-y-6 mt-6">
+          <Card>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                <Code2 className="h-5 w-5" />
+                Configuration Files
+              </CardTitle>
+              <CardDescription>
+                Key configuration files and their purposes
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-6">
+                <div>
+                  <h3 className="font-semibold mb-2 text-black dark:text-white flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    next.config.ts
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                    Optimized Next.js configuration with:
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-neutral-600 dark:text-neutral-400 ml-4 space-y-1">
+                    <li>Gzip compression enabled</li>
+                    <li>Package import optimization for icons and UI components</li>
+                    <li>Image optimization with AVIF and WebP</li>
+                    <li>Enhanced logging configuration</li>
+                  </ul>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h3 className="font-semibold mb-2 text-black dark:text-white flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    .env
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                    Environment variables for app configuration:
+                  </p>
+                  <div className="bg-neutral-900 text-neutral-100 p-4 rounded-lg font-mono text-xs overflow-x-auto">
+                    <div>NEXT_PUBLIC_APP_NAME=your-app-name</div>
+                    <div>NEXT_PUBLIC_APP_DESCRIPTION=&quot;App description&quot;</div>
+                    <div>NEXT_PUBLIC_APP_URL=http://localhost:3000</div>
+                    <div>NEXT_PUBLIC_APP_EMAIL=your@email.com</div>
+                  </div>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h3 className="font-semibold mb-2 text-black dark:text-white flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    proxy.ts
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                    Next.js 16 proxy middleware for:
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-neutral-600 dark:text-neutral-400 ml-4 space-y-1">
+                    <li>URL redirects and rewrites</li>
+                    <li>Authentication checks</li>
+                    <li>Custom header injection</li>
+                    <li>A/B testing and feature flags</li>
+                  </ul>
+                </div>
+
+                <Separator />
+
+                <div>
+                  <h3 className="font-semibold mb-2 text-black dark:text-white flex items-center gap-2">
+                    <Settings className="h-4 w-4" />
+                    lib/fonts.ts
+                  </h3>
+                  <p className="text-sm text-neutral-600 dark:text-neutral-400 mb-2">
+                    Optimized font loading configuration:
+                  </p>
+                  <ul className="list-disc list-inside text-sm text-neutral-600 dark:text-neutral-400 ml-4 space-y-1">
+                    <li>Inter font with swap display</li>
+                    <li>Prevents layout shift</li>
+                    <li>System font fallbacks</li>
+                    <li>CSS variables for easy styling</li>
+                  </ul>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader>
+              <CardTitle>Development Commands</CardTitle>
+              <CardDescription>
+                Common commands for your Next.js application
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <div className="space-y-4">
+                <div className="bg-neutral-900 text-neutral-100 p-4 rounded-lg font-mono text-sm space-y-2">
+                  <div>
+                    <span className="text-neutral-500"># Start development server</span>
+                    <div>npm run dev</div>
+                  </div>
+                  <div className="pt-2">
+                    <span className="text-neutral-500"># Build for production</span>
+                    <div>npm run build</div>
+                  </div>
+                  <div className="pt-2">
+                    <span className="text-neutral-500"># Start production server</span>
+                    <div>npm start</div>
+                  </div>
+                  <div className="pt-2">
+                    <span className="text-neutral-500"># Run linter</span>
+                    <div>npm run lint</div>
+                  </div>
+                </div>
+              </div>
+            </CardContent>
+          </Card>
+        </TabsContent>
+      </Tabs>
+
+      {/* Additional Resources */}
+      <div className="grid md:grid-cols-2 gap-6 mt-12">
+        <Card>
+          <CardHeader>
+            <CardTitle>Need Help?</CardTitle>
+            <CardDescription>Get support and connect with the community</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Link 
+              href="/contact" 
+              className="block text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              → Contact Support
+            </Link>
+            <Link 
+              href="https://github.com/geobasinas/create-geo-app" 
+              className="block text-blue-600 dark:text-blue-400 hover:underline"
+              target="_blank"
+            >
+              → GitHub Repository
+            </Link>
+            <Link 
+              href="https://ui.shadcn.com" 
+              className="block text-blue-600 dark:text-blue-400 hover:underline"
+              target="_blank"
+            >
+              → shadcn/ui Documentation
+            </Link>
+            <Link 
+              href="https://nextjs.org/docs" 
+              className="block text-blue-600 dark:text-blue-400 hover:underline"
+              target="_blank"
+            >
+              → Next.js Documentation
+            </Link>
+          </CardContent>
+        </Card>
+
+        <Card>
+          <CardHeader>
+            <CardTitle>Quick Links</CardTitle>
+            <CardDescription>Navigate to other sections</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3">
+            <Link 
+              href="/get-started" 
+              className="block text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              → Get Started Guide
+            </Link>
+            <Link 
+              href="/about" 
+              className="block text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              → About
+            </Link>
+            <Link 
+              href="/" 
+              className="block text-blue-600 dark:text-blue-400 hover:underline"
+            >
+              → Home
+            </Link>
+          </CardContent>
+        </Card>
+      </div>
+
+      {/* Back to Home */}
+      <div className="text-center mt-12">
+        <Link href="/" className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors text-lg">
+          ← Back to Home
+        </Link>
+      </div>
+    </div>
+  )
+}
+`;
+
+  const pagesDir = 'app/docs';
+  await mkdir(pagesDir, { recursive: true });
+  await writeFile(join(pagesDir, 'page.tsx'), docsContent);
 }
 
 async function updateMainPage() {
