@@ -32,7 +32,7 @@ npx @geobasinas/create-geo-app <project-name>
 - **Dark mode support** with next-themes and theme toggle
 - **Header component** with navigation menu
 - **Footer component** with links
-- **Essential pages**: About, Contact, Privacy, Terms
+- **Essential pages**: About, Contact, Privacy, Terms, Get Started, Docs
 - **Essential Next.js pages**: 404, Error, Loading, Sitemap, Robots
 - **Performance optimizations**: Webpack memory, package imports, image optimization
 - **Performance monitoring**: Navigation timing and instrumentation
@@ -42,6 +42,28 @@ npx @geobasinas/create-geo-app <project-name>
 - **Import alias** configured as `@/*`
 - **Proxy Middleware** with examples for common use cases
 - **Environment variables** pre-configured
+
+## 📚 Comprehensive Documentation Page
+
+Your generated app includes a beautiful, interactive documentation page at `/docs` that serves as a complete guide to your application:
+
+### Features of the Docs Page:
+- **📖 Overview Tab**: Introduction and key benefits of Create Geo App
+- **💻 CLI Usage Tab**: Detailed command-line instructions and examples
+- **✨ Features Tab**: Interactive accordion showcasing all included features
+- **🧩 Components Tab**: Complete catalog of pre-built components
+- **⚙️ API Reference Tab**: Configuration files and development commands
+
+### Built with Modern UI Components:
+The documentation page demonstrates the power of shadcn/ui by using:
+- **Tabs** - Organized content navigation
+- **Cards** - Clean, structured information display
+- **Accordion** - Expandable feature descriptions
+- **Badges** - Visual categorization
+- **Alerts** - Important notices and quick tips
+- **Separator** - Visual content division
+
+This docs page is fully responsive, supports dark mode, and provides an excellent starting point for your own project documentation.
 
 ## Essential Next.js Pages Included
 
