@@ -9,6 +9,7 @@ A CLI tool to create Next.js 16 apps with shadcn/ui pre-configured using the lat
 - 🔧 **Biome** for linting and formatting (replaces ESLint)
 - 🎨 **shadcn/ui** with all components pre-installed
 - 🌙 **Dark mode support** with next-themes
+- 📚 **MDX Documentation System** with syntax highlighting and copy buttons
 - 📦 **Latest configurations** based on official documentation
 - 🔧 **Non-interactive setup** with sensible defaults
 - ✅ **Proper validation** and error handling
@@ -30,7 +31,15 @@ npx @geobasinas/create-geo-app <project-name>
 - **App Router** structure with src directory
 - **shadcn/ui** with all available components
 - **Dark mode support** with next-themes and theme toggle
-- **Header component** with navigation menu
+- **MDX Documentation System** with:
+  - Auto-linked headings with `rehype-slug` and `rehype-autolink-headings`
+  - Beautiful typography with `@tailwindcss/typography`
+  - Syntax-highlighted code blocks with copy button
+  - Dynamic docs routing at `/docs/[...slug]`
+  - Sample documentation (Introduction, Installation, Quick Start, Configuration)
+  - Responsive sidebar with navigation
+  - `mdx-components.tsx` for custom MDX components
+- **Header component** with navigation menu (including Docs link)
 - **Footer component** with links
 - **Essential pages**: About, Contact, Privacy, Terms
 - **Essential Next.js pages**: 404, Error, Loading, Sitemap, Robots
@@ -101,6 +110,57 @@ Your generated app includes a `proxy.ts` file that implements the new Next.js 16
 - Function name: `middleware()` → `proxy()`
 - Enhanced TypeScript support
 - Better runtime configuration
+
+## MDX Documentation System
+
+Your generated app includes a fully functional MDX documentation system at `/docs`:
+
+### Features
+
+- **MDX Support**: Write documentation using Markdown with React components via `@next/mdx`
+- **Auto-linked Headings**: All headings get anchor links with `rehype-slug` and `rehype-autolink-headings`
+- **Beautiful Typography**: Styled with `@tailwindcss/typography` for professional prose
+- **Code Blocks**: Syntax-highlighted code blocks with copy-to-clipboard button
+- **Dark Mode**: Full dark mode support for all documentation
+- **Responsive Sidebar**: Collapsible navigation sidebar with active link highlighting
+- **Custom Components**: Global `mdx-components.tsx` for consistent styling
+
+### Structure
+
+```
+your-app/
+├── content/
+│   └── docs/
+│       ├── introduction.mdx
+│       ├── installation.mdx
+│       ├── quick-start.mdx
+│       └── configuration.mdx
+├── app/
+│   └── docs/
+│       ├── layout.tsx          # Docs layout with sidebar
+│       └── [...slug]/
+│           └── page.tsx         # Dynamic docs route
+├── components/
+│   ├── docs-sidebar.tsx         # Navigation sidebar
+│   └── copy-button.tsx          # Code copy button
+└── mdx-components.tsx           # Global MDX components
+```
+
+### Adding New Docs
+
+1. Create a new `.mdx` file in `content/docs/`
+2. Add the route to `docsMap` in `app/docs/[...slug]/page.tsx`
+3. Add a link in `components/docs-sidebar.tsx`
+4. Update `generateStaticParams` in the docs page
+
+### Sample Documentation
+
+The system comes with 4 sample documentation pages:
+
+- **Introduction**: Overview and features
+- **Installation**: Setup instructions
+- **Quick Start**: Getting started guide
+- **Configuration**: Configuration options
 
 ## Example
 
