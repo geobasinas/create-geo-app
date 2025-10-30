@@ -85,6 +85,10 @@ async function main() {
     console.log('\n📦 Installing optimized third-party libraries...');
     await execa('npm', ['install', '@next/third-parties@latest', 'sharp'], { stdio: 'inherit' });
 
+    // Install MDX and documentation dependencies
+    console.log('\n📚 Installing MDX and documentation dependencies...');
+    await execa('npm', ['install', '@next/mdx', '@mdx-js/loader', '@mdx-js/react', '@types/mdx', 'rehype-slug', 'rehype-autolink-headings', '@tailwindcss/typography'], { stdio: 'inherit' });
+
     // Create theme provider component
     console.log('\n🎨 Setting up theme provider...');
     await createThemeProvider();
@@ -151,6 +155,17 @@ async function main() {
     // Create proxy middleware file for Next.js 16
     console.log('\n🔧 Setting up proxy middleware...');
     await createProxyMiddleware();
+
+    // Create documentation system
+    console.log('\n📚 Setting up documentation system...');
+    await createMdxComponents();
+    await createDocsSidebar();
+    await createDocsLayout();
+    await createDocsPage();
+    await createSampleDocs();
+    await updateNextConfigForMdx();
+    await updateTailwindConfigForTypography();
+    await updateHeaderWithDocsLink();
 
     console.log('\n✅ Setup complete! To start developing:');
     console.log(`📁 cd ${projectName}`);
@@ -310,6 +325,12 @@ export function MobileMenu() {
               onClick={() => setOpen(false)}
             >
               Home
+            </Link>
+            <Link
+              href="/docs/introduction"
+              onClick={() => setOpen(false)}
+            >
+              Docs
             </Link>
             <Link
               href="/about"
@@ -1029,6 +1050,30 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 1,
     },
     {
+      url: \`\${baseUrl}/docs/introduction\`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: \`\${baseUrl}/docs/installation\`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: \`\${baseUrl}/docs/quick-start\`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
+      url: \`\${baseUrl}/docs/configuration\`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.9,
+    },
+    {
       url: \`\${baseUrl}/about\`,
       lastModified: new Date(),
       changeFrequency: 'monthly',
@@ -1265,6 +1310,757 @@ export const interTight = Inter({
 async function readFile(path, encoding = 'utf-8') {
   const { readFile } = await import('fs/promises');
   return readFile(path, encoding);
+}
+
+async function createMdxComponents() {
+  const mdxComponentsContent = `import type { MDXComponents } from 'mdx/types'
+import { CopyButton } from '@/components/copy-button'
+
+export function useMDXComponents(components: MDXComponents): MDXComponents {
+  return {
+    h1: ({ children }) => (
+      <h1 className="scroll-m-20 text-4xl font-bold tracking-tight mb-4">
+        {children}
+      </h1>
+    ),
+    h2: ({ children }) => (
+      <h2 className="scroll-m-20 border-b pb-2 text-3xl font-semibold tracking-tight first:mt-0 mt-10 mb-4">
+        {children}
+      </h2>
+    ),
+    h3: ({ children }) => (
+      <h3 className="scroll-m-20 text-2xl font-semibold tracking-tight mt-8 mb-4">
+        {children}
+      </h3>
+    ),
+    h4: ({ children }) => (
+      <h4 className="scroll-m-20 text-xl font-semibold tracking-tight mt-6 mb-4">
+        {children}
+      </h4>
+    ),
+    p: ({ children }) => (
+      <p className="leading-7 [&:not(:first-child)]:mt-6">
+        {children}
+      </p>
+    ),
+    ul: ({ children }) => (
+      <ul className="my-6 ml-6 list-disc [&>li]:mt-2">
+        {children}
+      </ul>
+    ),
+    ol: ({ children }) => (
+      <ol className="my-6 ml-6 list-decimal [&>li]:mt-2">
+        {children}
+      </ol>
+    ),
+    li: ({ children }) => (
+      <li className="mt-2">
+        {children}
+      </li>
+    ),
+    blockquote: ({ children }) => (
+      <blockquote className="mt-6 border-l-2 pl-6 italic">
+        {children}
+      </blockquote>
+    ),
+    code: ({ children, ...props }) => {
+      const isInline = !props.className
+      
+      if (isInline) {
+        return (
+          <code className="relative rounded bg-muted px-[0.3rem] py-[0.2rem] font-mono text-sm">
+            {children}
+          </code>
+        )
+      }
+      
+      return (
+        <div className="relative">
+          <pre className="mb-4 mt-6 overflow-x-auto rounded-lg border bg-black p-4">
+            <code className="relative rounded font-mono text-sm text-white" {...props}>
+              {children}
+            </code>
+          </pre>
+          <CopyButton text={String(children)} />
+        </div>
+      )
+    },
+    a: ({ href, children }) => (
+      <a
+        href={href}
+        className="font-medium underline underline-offset-4 hover:text-primary"
+        target={href?.startsWith('http') ? '_blank' : undefined}
+        rel={href?.startsWith('http') ? 'noopener noreferrer' : undefined}
+      >
+        {children}
+      </a>
+    ),
+    table: ({ children }) => (
+      <div className="my-6 w-full overflow-y-auto">
+        <table className="w-full">
+          {children}
+        </table>
+      </div>
+    ),
+    th: ({ children }) => (
+      <th className="border px-4 py-2 text-left font-bold [&[align=center]]:text-center [&[align=right]]:text-right">
+        {children}
+      </th>
+    ),
+    td: ({ children }) => (
+      <td className="border px-4 py-2 text-left [&[align=center]]:text-center [&[align=right]]:text-right">
+        {children}
+      </td>
+    ),
+    ...components,
+  }
+}
+`;
+
+  await writeFile('mdx-components.tsx', mdxComponentsContent);
+}
+
+async function createCopyButton() {
+  const copyButtonContent = `"use client"
+
+import { useState } from "react"
+import { Check, Copy } from "lucide-react"
+import { Button } from "@/components/ui/button"
+
+export function CopyButton({ text }: { text: string }) {
+  const [copied, setCopied] = useState(false)
+
+  const copy = async () => {
+    await navigator.clipboard.writeText(text)
+    setCopied(true)
+    setTimeout(() => setCopied(false), 2000)
+  }
+
+  return (
+    <Button
+      size="icon"
+      variant="ghost"
+      className="absolute right-4 top-4 h-6 w-6"
+      onClick={copy}
+    >
+      {copied ? (
+        <Check className="h-3 w-3" />
+      ) : (
+        <Copy className="h-3 w-3" />
+      )}
+      <span className="sr-only">Copy code</span>
+    </Button>
+  )
+}
+`;
+
+  const componentsDir = 'components';
+  await mkdir(componentsDir, { recursive: true });
+  await writeFile(join(componentsDir, 'copy-button.tsx'), copyButtonContent);
+}
+
+async function createDocsSidebar() {
+  const docsSidebarContent = `"use client"
+
+import Link from "next/link"
+import { usePathname } from "next/navigation"
+import { cn } from "@/lib/utils"
+
+const docsNav = [
+  {
+    title: "Getting Started",
+    items: [
+      { title: "Introduction", href: "/docs/introduction" },
+      { title: "Installation", href: "/docs/installation" },
+    ],
+  },
+  {
+    title: "Guides",
+    items: [
+      { title: "Quick Start", href: "/docs/quick-start" },
+      { title: "Configuration", href: "/docs/configuration" },
+    ],
+  },
+]
+
+export function DocsSidebar() {
+  const pathname = usePathname()
+
+  return (
+    <aside className="w-full md:w-64 md:flex-shrink-0">
+      <div className="sticky top-20 -mt-10 h-[calc(100vh-3.5rem)] overflow-y-auto py-10">
+        <nav className="space-y-6">
+          {docsNav.map((section) => (
+            <div key={section.title}>
+              <h4 className="mb-2 font-semibold text-sm text-black dark:text-white">
+                {section.title}
+              </h4>
+              <ul className="space-y-2">
+                {section.items.map((item) => (
+                  <li key={item.href}>
+                    <Link
+                      href={item.href}
+                      className={cn(
+                        "block text-sm hover:text-black dark:hover:text-white transition-colors",
+                        pathname === item.href
+                          ? "text-black dark:text-white font-medium"
+                          : "text-neutral-600 dark:text-neutral-400"
+                      )}
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      </div>
+    </aside>
+  )
+}
+`;
+
+  const componentsDir = 'components';
+  await mkdir(componentsDir, { recursive: true });
+  await writeFile(join(componentsDir, 'docs-sidebar.tsx'), docsSidebarContent);
+}
+
+async function createDocsLayout() {
+  const docsLayoutContent = `import { DocsSidebar } from "@/components/docs-sidebar"
+
+export default function DocsLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <div className="container mx-auto px-4 py-10">
+      <div className="flex flex-col md:flex-row gap-10">
+        <DocsSidebar />
+        <main className="flex-1 min-w-0">
+          <article className="prose prose-neutral dark:prose-invert max-w-none">
+            {children}
+          </article>
+        </main>
+      </div>
+    </div>
+  )
+}
+`;
+
+  const docsDir = 'app/docs';
+  await mkdir(docsDir, { recursive: true });
+  await writeFile(join(docsDir, 'layout.tsx'), docsLayoutContent);
+}
+
+async function createDocsPage() {
+  const docsPageContent = `import { notFound } from "next/navigation"
+
+// Map of slugs to MDX imports
+const docsMap: Record<string, () => Promise<any>> = {
+  introduction: () => import("@/content/docs/introduction.mdx"),
+  installation: () => import("@/content/docs/installation.mdx"),
+  "quick-start": () => import("@/content/docs/quick-start.mdx"),
+  configuration: () => import("@/content/docs/configuration.mdx"),
+}
+
+export default async function DocsPage({
+  params,
+}: {
+  params: { slug?: string[] }
+}) {
+  const slug = params.slug?.[0] || "introduction"
+  const docImport = docsMap[slug]
+
+  if (!docImport) {
+    notFound()
+  }
+
+  const { default: Content } = await docImport()
+
+  return <Content />
+}
+
+export async function generateStaticParams() {
+  return [
+    { slug: ["introduction"] },
+    { slug: ["installation"] },
+    { slug: ["quick-start"] },
+    { slug: ["configuration"] },
+  ]
+}
+`;
+
+  const docsDir = 'app/docs/[...slug]';
+  await mkdir(docsDir, { recursive: true });
+  await writeFile(join(docsDir, 'page.tsx'), docsPageContent);
+}
+
+async function createSampleDocs() {
+  // Create copy button first
+  await createCopyButton();
+
+  const introContent = `# Introduction
+
+Welcome to the documentation! This is a minimal documentation system built with MDX.
+
+## Features
+
+This documentation system includes:
+
+- **MDX Support**: Write documentation using Markdown with React components
+- **Auto-linked Headings**: All headings automatically get anchor links
+- **Typography**: Beautiful typography with Tailwind's typography plugin
+- **Code Blocks**: Syntax-highlighted code blocks with copy button
+- **Dark Mode**: Automatic dark mode support
+
+## Getting Started
+
+Check out the [Installation](/docs/installation) guide to get started.
+
+## Code Example
+
+Here's a simple example:
+
+\`\`\`typescript
+const greeting = "Hello, World!"
+console.log(greeting)
+\`\`\`
+
+You can copy the code above using the copy button in the top-right corner.
+
+## Inline Code
+
+You can also use \`inline code\` within paragraphs.
+
+## Lists
+
+### Unordered List
+
+- First item
+- Second item
+- Third item
+
+### Ordered List
+
+1. First step
+2. Second step
+3. Third step
+
+## Blockquote
+
+> This is a blockquote. It can be used to highlight important information or quotes.
+
+## Links
+
+You can add [internal links](/docs/installation) or [external links](https://nextjs.org).
+`;
+
+  const installationContent = `# Installation
+
+Learn how to install and set up your project.
+
+## Prerequisites
+
+Before you begin, ensure you have:
+
+- Node.js 18.0 or later
+- npm or yarn package manager
+
+## Install Dependencies
+
+Run the following command to install all dependencies:
+
+\`\`\`bash
+npm install
+\`\`\`
+
+Or with yarn:
+
+\`\`\`bash
+yarn install
+\`\`\`
+
+## Environment Setup
+
+Create a \`.env.local\` file in the root of your project:
+
+\`\`\`bash
+NEXT_PUBLIC_API_URL=http://localhost:3000
+\`\`\`
+
+## Start Development Server
+
+Once everything is installed, start the development server:
+
+\`\`\`bash
+npm run dev
+\`\`\`
+
+Your app should now be running at [http://localhost:3000](http://localhost:3000).
+
+## Next Steps
+
+- Check out the [Quick Start](/docs/quick-start) guide
+- Learn about [Configuration](/docs/configuration)
+`;
+
+  const quickStartContent = `# Quick Start
+
+Get up and running quickly with this guide.
+
+## Create Your First Page
+
+1. Navigate to the \`app\` directory
+2. Create a new file called \`page.tsx\`
+3. Add the following code:
+
+\`\`\`typescript
+export default function Home() {
+  return (
+    <div>
+      <h1>Hello, World!</h1>
+    </div>
+  )
+}
+\`\`\`
+
+## Add Styling
+
+You can use Tailwind CSS classes for styling:
+
+\`\`\`typescript
+export default function Home() {
+  return (
+    <div className="container mx-auto px-4 py-16">
+      <h1 className="text-4xl font-bold">Hello, World!</h1>
+      <p className="text-lg text-neutral-600 dark:text-neutral-400">
+        Welcome to your new app!
+      </p>
+    </div>
+  )
+}
+\`\`\`
+
+## Use Components
+
+Import and use UI components from shadcn/ui:
+
+\`\`\`typescript
+import { Button } from "@/components/ui/button"
+
+export default function Home() {
+  return (
+    <div className="container mx-auto px-4 py-16">
+      <h1 className="text-4xl font-bold mb-4">Hello, World!</h1>
+      <Button>Click me</Button>
+    </div>
+  )
+}
+\`\`\`
+`;
+
+  const configurationContent = `# Configuration
+
+Learn how to configure your application.
+
+## Next.js Configuration
+
+The \`next.config.ts\` file contains your Next.js configuration:
+
+\`\`\`typescript
+import type { NextConfig } from "next"
+
+const nextConfig: NextConfig = {
+  // Your configuration here
+}
+
+export default nextConfig
+\`\`\`
+
+## Tailwind Configuration
+
+Customize your Tailwind configuration in \`tailwind.config.ts\`:
+
+\`\`\`typescript
+import type { Config } from "tailwindcss"
+
+const config: Config = {
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+  ],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+}
+
+export default config
+\`\`\`
+
+## Environment Variables
+
+Add environment variables to your \`.env.local\` file:
+
+\`\`\`bash
+# API Configuration
+NEXT_PUBLIC_API_URL=https://api.example.com
+
+# Authentication
+NEXT_PUBLIC_AUTH_DOMAIN=auth.example.com
+\`\`\`
+
+## TypeScript Configuration
+
+The \`tsconfig.json\` file configures TypeScript:
+
+\`\`\`json
+{
+  "compilerOptions": {
+    "target": "ES2017",
+    "lib": ["dom", "dom.iterable", "esnext"],
+    "allowJs": true,
+    "skipLibCheck": true,
+    "strict": true,
+    "forceConsistentCasingInFileNames": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "jsx": "preserve",
+    "incremental": true,
+    "paths": {
+      "@/*": ["./*"]
+    }
+  }
+}
+\`\`\`
+`;
+
+  const contentDocsDir = 'content/docs';
+  await mkdir(contentDocsDir, { recursive: true });
+  await writeFile(join(contentDocsDir, 'introduction.mdx'), introContent);
+  await writeFile(join(contentDocsDir, 'installation.mdx'), installationContent);
+  await writeFile(join(contentDocsDir, 'quick-start.mdx'), quickStartContent);
+  await writeFile(join(contentDocsDir, 'configuration.mdx'), configurationContent);
+}
+
+async function updateNextConfigForMdx() {
+  const nextConfigContent = `import type { NextConfig } from "next"
+import createMDX from '@next/mdx'
+import rehypeSlug from 'rehype-slug'
+import rehypeAutolinkHeadings from 'rehype-autolink-headings'
+
+const nextConfig: NextConfig = {
+  // Performance optimizations
+  compress: true, // Enable gzip compression
+  poweredByHeader: false, // Remove X-Powered-By header
+  
+  // Configure MDX page extensions
+  pageExtensions: ['js', 'jsx', 'md', 'mdx', 'ts', 'tsx'],
+  
+  // Turbopack is enabled by default in Next.js 16
+  turbopack: {
+    // Turbopack already optimizes bundles automatically
+    // No additional config needed for most cases
+  },
+  
+  experimental: {
+    optimizePackageImports: ['lucide-react', '@radix-ui/react-*', 'next-themes'],
+    // Faster server component rendering
+    serverComponentsHmrCache: true,
+    mdxRs: true,
+  },
+  
+  logging: {
+    fetches: {
+      fullUrl: true,
+    },
+  },
+  
+  images: {
+    formats: ['image/avif', 'image/webp'], // Use modern formats
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.vercel.app',
+      },
+      {
+        protocol: 'https',
+        hostname: '**.githubusercontent.com',
+      },
+    ],
+    dangerouslyAllowSVG: true,
+    contentDispositionType: 'attachment',
+    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+  },
+}
+
+const withMDX = createMDX({
+  options: {
+    rehypePlugins: [
+      rehypeSlug,
+      [
+        rehypeAutolinkHeadings,
+        {
+          behavior: 'wrap',
+          properties: {
+            className: ['anchor'],
+          },
+        },
+      ],
+    ],
+  },
+})
+
+export default withMDX(nextConfig)
+`;
+
+  await writeFile('next.config.ts', nextConfigContent);
+}
+
+async function updateTailwindConfigForTypography() {
+  const tailwindConfigContent = `import type { Config } from "tailwindcss"
+
+const config: Config = {
+  darkMode: ["class"],
+  content: [
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
+    "./content/**/*.{md,mdx}",
+  ],
+  theme: {
+    extend: {
+      borderRadius: {
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
+      },
+      colors: {
+        background: "hsl(var(--background))",
+        foreground: "hsl(var(--foreground))",
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        primary: {
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+        },
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
+        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+        ring: "hsl(var(--ring))",
+        chart: {
+          "1": "hsl(var(--chart-1))",
+          "2": "hsl(var(--chart-2))",
+          "3": "hsl(var(--chart-3))",
+          "4": "hsl(var(--chart-4))",
+          "5": "hsl(var(--chart-5))",
+        },
+      },
+      typography: {
+        DEFAULT: {
+          css: {
+            maxWidth: 'none',
+          },
+        },
+      },
+    },
+  },
+  plugins: [require("tailwindcss-animate"), require("@tailwindcss/typography")],
+}
+
+export default config
+`;
+
+  await writeFile('tailwind.config.ts', tailwindConfigContent);
+}
+
+async function updateHeaderWithDocsLink() {
+  const headerContent = `"use client"
+
+import * as React from "react"
+import Link from "next/link"
+import { Button } from "@/components/ui/button"
+import { ModeToggle } from "@/components/mode-toggle"
+import { HoverPrefetchLink } from "@/components/hover-prefetch-link"
+import { MobileMenu } from "@/components/mobile-menu"
+
+export function Header() {
+  return (
+    <header className="bg-white dark:bg-black border-b border-neutral-200 dark:border-neutral-800">
+      <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+        <Link href="/" className="text-xl font-semibold text-black dark:text-white hover:opacity-80 transition-opacity">
+          {process.env.NEXT_PUBLIC_APP_NAME || "Geo App"}
+        </Link>
+        
+        {/* Desktop Navigation */}
+        <nav className="hidden md:flex items-center space-x-6">
+          <HoverPrefetchLink href="/">
+            <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors">
+              Home
+            </span>
+          </HoverPrefetchLink>
+          <HoverPrefetchLink href="/docs/introduction">
+            <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors">
+              Docs
+            </span>
+          </HoverPrefetchLink>
+          <HoverPrefetchLink href="/about">
+            <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors">
+              About
+            </span>
+          </HoverPrefetchLink>
+          <HoverPrefetchLink href="/contact">
+            <span className="text-neutral-600 dark:text-neutral-400 hover:text-black dark:hover:text-white transition-colors">
+              Contact
+            </span>
+          </HoverPrefetchLink>
+          <Button asChild variant="outline" className="border-neutral-300 dark:border-neutral-600 text-neutral-700 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-800">
+            <HoverPrefetchLink href="/get-started">
+              Get Started
+            </HoverPrefetchLink>
+          </Button>
+          <ModeToggle />
+        </nav>
+
+        {/* Mobile Navigation */}
+        <MobileMenu />
+      </div>
+    </header>
+  )
+}
+`;
+
+  const componentsDir = 'components';
+  await mkdir(componentsDir, { recursive: true });
+  await writeFile(join(componentsDir, 'header.tsx'), headerContent);
 }
 
 main();
